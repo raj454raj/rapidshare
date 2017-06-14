@@ -1,5 +1,5 @@
 class DocumentsController < ApplicationController
-  before_action :set_document, only: [:show, :edit, :update, :destroy]
+  include DocumentsHelper
 
   def index
     @documents = Document.all
@@ -7,7 +7,7 @@ class DocumentsController < ApplicationController
 
   def show
     @document = Document.find(params[:id])
-    send_data(@document.documentname,
+    send_file(full_path(@document.storedfile_name),
               type: @document.documenttype,
               filename: @document.documentname)
   end
@@ -21,35 +21,50 @@ class DocumentsController < ApplicationController
 
     respond_to do |format|
       if @document.save
-        format.html { redirect_to documents_path, notice: 'Document was successfully created.' }
+        format.html { redirect_to documents_path }
       else
         format.html { render action: 'new' }
       end
     end
   end
 
+  def edit
+    @document = Document.find(params[:id])
+  end
+
   def update
     @document = Document.find(params[:id])
-    respond_to do |format|
-      if @document.update(document_params)
-        format.html { redirect_to @document, notice: 'Document was successfully updated.' }
-      else
-        format.html { render action: 'edit' }
-      end
+    update_params = {:documentname => params[:document][:documentname]}
+    if params["document"]["file"]
+      File.delete(full_path(@document.storedfile_name))
+      update_params[:storedfile_name] = upload_file(params["document"]["file"])
     end
+    @document.update_attributes(update_params)
+    redirect_to documents_path
   end
 
   def destroy
     @document = Document.find(params[:id])
+    # Delete the file from filesystem
+    File.delete(full_path(@document.storedfile_name))
+    # Delete the corresponding record from db
     @document.destroy
     respond_to do |format|
       format.html { redirect_to documents_url }
-      # format.json { head :no_content }
     end
   end
 
   private
+    def full_path(filename)
+      File.join("public/uploads", filename)
+    end
+
     def document_params
       params.require(:document).permit(:file)
     end
+
+    def update_document_params
+      params.require(:document).permit(:file, :documentname)
+    end
+
 end

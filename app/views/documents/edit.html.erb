@@ -1,0 +1,9 @@
+<%= form_for(@document) do |f| %>
+  <%= f.label :document_name %>
+  <%= f.text_field :documentname %> <br/>
+  <%= f.label :document_file %>
+  <%= f.file_field :file %>
+  <%= f.submit "Save changes" %>
+<% end %>
+
+Uploaded file: <%= button_to 'Download', @document, method: :get %><br/>

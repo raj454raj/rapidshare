@@ -1,4 +1,5 @@
 class Document < ActiveRecord::Base
+  include DocumentsHelper
 
   def initialize(params = {})
     @file = params.delete(:file)
@@ -6,7 +7,7 @@ class Document < ActiveRecord::Base
     if @file
       self.documentname = File.basename(@file.original_filename)
       self.documenttype = @file.content_type
-      self.contents = @file.read
+      self.storedfile_name = upload_file(@file)
     end
   end
 
