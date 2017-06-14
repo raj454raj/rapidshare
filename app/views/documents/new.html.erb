@@ -1,0 +1,9 @@
+<h2>Please upload a file</h2>
+<%= form_for(@document) do |f| %>
+  <div class="field">
+    <%= f.file_field :file %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

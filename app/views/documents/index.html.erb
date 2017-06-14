@@ -1,0 +1,13 @@
+<h2>Uploaded documents</h2>
+<%= link_to "Upload Document", new_document_path %>
+<br/><br/>
+
+<table>
+<% @documents.each do |document| %>
+  <tr>
+    <td><%= document.documentname %></td>
+    <td><%= button_to 'Download', document, method: :get %></td>
+    <td><%= button_to 'Delete', document, method: :delete %></td>
+  </tr>
+<% end %>
+</table>
