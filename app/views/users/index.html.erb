@@ -1,0 +1,31 @@
+<h2>File upload download platform</h2>
+<h5>Public documents</h5>
+
+<% if session[:user_id] %>
+  <%= button_to 'Upload document', new_user_document_path(session[:user_id]), method: :get %>
+  <%= button_to 'Logout', logout_path, method: :delete %>
+<% else %>
+  <%= button_to 'Login', login_path, method: :get %>
+  <%= button_to 'Register', register_path, method: :get %>
+<% end %>
+
+<table>
+<tr><th>File name</th><th>Public</th><th>User name</th><th>Actions</th></tr>
+<% @documents.each do |document| %>
+  <tr>
+    <td><%= document.documentname %></td>
+    <td><%= document.is_public ? "Yes" : "No" %></td>
+    <td><%= User.find(document.user_id).name %></td>
+    <td><%= button_to 'Download', url_for(action: "get_file",
+                                          controller: "documents",
+                                          id: document.id), method: :get %></td>
+    <% if document.user_id == session[:user_id] %>
+      <td><%= button_to 'Update', url_for(action: "edit",
+                                          controller: "documents",
+                                          id: document.id,
+                                          user_id: document.user_id), method: :get %></td>
+      <td><%= button_to 'Delete', user_document_path(session[:user_id], document), method: :delete %></td>
+    <% end %>
+  </tr>
+<% end %>
+</table>

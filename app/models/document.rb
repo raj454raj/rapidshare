@@ -1,4 +1,5 @@
 class Document < ActiveRecord::Base
+  belongs_to :user
   include DocumentsHelper
 
   def initialize(params = {})
@@ -7,7 +8,7 @@ class Document < ActiveRecord::Base
     if @file
       self.documentname = File.basename(@file.original_filename)
       self.documenttype = @file.content_type
-      self.storedfile_name = upload_file(@file)
+      self.storedfile_name = upload_file(user_id, @file)
     end
   end
 

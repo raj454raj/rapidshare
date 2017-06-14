@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170614070258) do
+ActiveRecord::Schema.define(version: 20170614114208) do
 
   create_table "documents", force: true do |t|
     t.datetime "created_at"
@@ -19,6 +19,17 @@ ActiveRecord::Schema.define(version: 20170614070258) do
     t.string   "documentname"
     t.string   "documenttype"
     t.string   "storedfile_name"
+    t.boolean  "is_public"
+    t.integer  "user_id"
+  end
+
+  create_table "users", force: true do |t|
+    t.string   "name"
+    t.string   "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "password_hash"
+    t.string   "password_salt"
   end
 
 end

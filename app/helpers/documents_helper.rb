@@ -1,7 +1,9 @@
 module DocumentsHelper
-  def upload_file(actual_file)
+  def upload_file(user_id, actual_file)
     filename = File.basename(actual_file.original_filename)
-    directory = "public/uploads"
+    directory = File.join("public/uploads", user_id.to_s)
+    FileUtils.mkdir(directory) if !File.directory?(directory)
+
     while File.exists?(File.join(directory, filename))
       if filename.include?("___")
         number = filename.match(/\d___/).to_s

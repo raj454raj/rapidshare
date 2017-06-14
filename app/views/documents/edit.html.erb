@@ -1,9 +1,14 @@
-<%= form_for(@document) do |f| %>
+<%= form_for :document, url: user_document_path(@document.user_id, @document), :html => {multipart: true, method: 'PUT'} do |f| %>
   <%= f.label :document_name %>
   <%= f.text_field :documentname %> <br/>
+  <%= f.label :is_public %>
+  <%= f.check_box :is_public %>
   <%= f.label :document_file %>
   <%= f.file_field :file %>
   <%= f.submit "Save changes" %>
 <% end %>
 
-Uploaded file: <%= button_to 'Download', @document, method: :get %><br/>
+Uploaded file: <%= button_to 'Download',
+                             url_for(action: "get_file",
+                                     controller: "documents",
+                                     id: @document.id), method: :get %><br/>
