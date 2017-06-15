@@ -1,6 +1,6 @@
 class DocumentsController < ApplicationController
   include DocumentsHelper
-  before_filter :require_user, except: [:show, :get_file]
+  before_action :authenticate_user!, except: [:get_file]
 
   def index
     @documents = Document.all
@@ -15,12 +15,12 @@ class DocumentsController < ApplicationController
   end
 
   def new
-    @user = User.find(session[:user_id])
+    @user = User.find(current_user.id)
     @document = @user.documents.build
   end
 
   def create
-    @user = User.find(session[:user_id])
+    @user = User.find(current_user.id)
     @document = @user.documents.build(document_params)
 
     respond_to do |format|
@@ -33,18 +33,18 @@ class DocumentsController < ApplicationController
   end
 
   def edit
-    @user = User.find(session[:user_id])
+    @user = User.find(current_user.id)
     @document = @user.documents.find(params[:id])
   end
 
   def update
-    @user = User.find(session[:user_id])
+    @user = User.find(current_user.id)
     @document = @user.documents.find(params[:id])
     update_params = {documentname: params[:document][:documentname],
                      is_public: params[:document][:is_public]}
     if params["document"]["file"]
       File.delete(full_path(@document.storedfile_name))
-      update_params[:storedfile_name] = upload_file(session[:user_id],
+      update_params[:storedfile_name] = upload_file(current_user.id,
                                                     params["document"]["file"])
     end
     @document.update_attributes(update_params)
@@ -52,7 +52,7 @@ class DocumentsController < ApplicationController
   end
 
   def destroy
-    @user = User.find(session[:user_id])
+    @user = User.find(current_user.id)
     @document = @user.documents.find(params[:id])
     # Delete the file from filesystem
     File.delete(full_path(@document.storedfile_name))
@@ -66,7 +66,7 @@ class DocumentsController < ApplicationController
   private
 
   def full_path(filename)
-    File.join("public/uploads/" + session[:user_id].to_s, filename)
+    File.join("public/uploads/" + current_user.id.to_s, filename)
   end
 
   def document_params

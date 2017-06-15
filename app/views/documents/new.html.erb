@@ -2,7 +2,7 @@
 <%= form_for :document,
              url: user_documents_path,
              html: {multipart: true} do |f| %>
-  <%= f.file_field :file %>
+  <%= f.file_field :file, required: true %>
   Public ? <%= f.check_box :is_public %>
   <%= f.submit "Upload file" %>
 <% end %>
