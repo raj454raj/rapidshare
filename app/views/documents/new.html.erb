@@ -1,5 +1,7 @@
 <h2>Please upload a file</h2>
-<%= form_for :document, url: user_documents_path, :html => {multipart: true} do |f| %>
+<%= form_for :document,
+             url: user_documents_path,
+             html: {multipart: true} do |f| %>
   <%= f.file_field :file %>
   Public ? <%= f.check_box :is_public %>
   <%= f.submit "Upload file" %>

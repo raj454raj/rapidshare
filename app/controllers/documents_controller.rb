@@ -14,11 +14,6 @@ class DocumentsController < ApplicationController
               filename: @document.documentname)
   end
 
-  def show
-    @document = Document.find(params[:id])
-    @user = User.find(params[:user_id])
-  end
-
   def new
     @user = User.find(session[:user_id])
     @document = @user.documents.build
@@ -26,7 +21,7 @@ class DocumentsController < ApplicationController
 
   def create
     @user = User.find(session[:user_id])
-    @document = user.documents.build(document_params)
+    @document = @user.documents.build(document_params)
 
     respond_to do |format|
       if @document.save
@@ -45,8 +40,8 @@ class DocumentsController < ApplicationController
   def update
     @user = User.find(session[:user_id])
     @document = @user.documents.find(params[:id])
-    update_params = {:documentname => params[:document][:documentname],
-                     :is_public => params[:document][:is_public]}
+    update_params = {documentname: params[:document][:documentname],
+                     is_public: params[:document][:is_public]}
     if params["document"]["file"]
       File.delete(full_path(@document.storedfile_name))
       update_params[:storedfile_name] = upload_file(session[:user_id],
@@ -69,11 +64,12 @@ class DocumentsController < ApplicationController
   end
 
   private
-    def full_path(filename)
-      File.join("public/uploads/" + session[:user_id].to_s, filename)
-    end
 
-    def document_params
-      params.require(:document).permit(:file, :is_public)
-    end
+  def full_path(filename)
+    File.join("public/uploads/" + session[:user_id].to_s, filename)
+  end
+
+  def document_params
+    params.require(:document).permit(:file, :is_public)
+  end
 end
