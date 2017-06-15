@@ -1,8 +1,8 @@
 <%= form_for :document,
              url: user_document_path(@document.user_id, @document),
              html: {multipart: true, method: 'PUT'} do |f| %>
-  <%= f.label :document_name %>
-  <%= f.text_field :documentname %> <br/>
+  <%= f.label :name %>
+  <%= f.text_field :name %> <br/>
   <%= f.label :is_public %>
   <%= f.check_box :is_public %>
   <%= f.label :document_file %>

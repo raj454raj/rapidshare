@@ -1,0 +1,27 @@
+<%= link_to "New Document", new_user_document_path, class: "btn btn-primary" %>
+<br />
+<br />
+
+<table>
+  <thead>
+     <tr>
+        <th>Name</th>
+        <th>Download Link</th>
+        <th></th>
+     </tr>
+  </thead>
+  <tbody>
+     <% @documents.each do |document| %>
+        <tr>
+          <td><%= document.name %></td>
+          <td><%= button_to "Download", url_for(action: "get_file",
+                                                controller: "documents",
+                                                id: document.id), method: :get %></td>
+          <td><%= button_to "Update", url_for(action: "edit",
+                                              controller: "documents",
+                                              id: document.id), method: :get %></td>
+          <td><%= button_to "Delete",  user_document_path(document.user_id, document), method: :delete, class: "btn btn-danger", confirm: "Are you sure that you wish to delete #{document.name}?" %></td>
+        </tr>
+     <% end %>
+  </tbody>
+</table>

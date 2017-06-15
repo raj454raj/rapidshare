@@ -6,6 +6,7 @@ gem 'rails', '4.1.15'
 gem 'bcrypt'
 gem 'pry-nav'
 gem 'devise'
+gem 'carrierwave'
 
 # Use mysql as the database for Active Record
 gem 'mysql2', '~> 0.3.13'

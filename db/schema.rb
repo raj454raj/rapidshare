@@ -11,16 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170615081440) do
+ActiveRecord::Schema.define(version: 20170615094413) do
 
   create_table "documents", force: true do |t|
-    t.string   "documentname"
-    t.string   "documenttype"
-    t.string   "storedfile_name"
-    t.boolean  "is_public"
+    t.string   "name"
+    t.string   "attachment"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_public"
   end
 
   add_index "documents", ["user_id"], name: "index_documents_on_user_id", using: :btree

@@ -15,7 +15,7 @@
 <tr><th>File name</th><th>Public</th><th>Email</th><th>Actions</th></tr>
 <% @documents.each do |document| %>
   <tr>
-    <td><%= document.documentname %></td>
+    <td><%= document.name %></td>
     <td><%= document.is_public ? "Yes" : "No" %></td>
     <td><%= User.find(document.user_id).email %></td>
     <td><%= button_to 'Download',

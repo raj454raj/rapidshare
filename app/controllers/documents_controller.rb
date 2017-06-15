@@ -1,5 +1,4 @@
 class DocumentsController < ApplicationController
-  include DocumentsHelper
   before_action :authenticate_user!, except: [:get_file]
 
   def index
@@ -8,28 +7,29 @@ class DocumentsController < ApplicationController
 
   def get_file
     @document = Document.find(params[:id])
-    send_file(File.join("public/uploads/" + @document.user_id.to_s,
-                        @document.storedfile_name),
-              type: @document.documenttype,
-              filename: @document.documentname)
+    send_file(File.join("public", @document.attachment_url),
+              filename: @document.name)
   end
 
   def new
-    @user = User.find(current_user.id)
-    @document = @user.documents.build
+    @document = Document.new
   end
 
   def create
     @user = User.find(current_user.id)
     @document = @user.documents.build(document_params)
-
-    respond_to do |format|
-      if @document.save
-        format.html { redirect_to user_home_path }
-      else
-        format.html { render action: 'new' }
-      end
+    if @document.save
+       redirect_to user_home_path, notice: "The document #{@document.name} has been uploaded."
+    else
+       render "new"
     end
+  end
+
+  def destroy
+    @user = User.find(current_user.id)
+    @document = @user.documents.find(params[:id])
+    @document.destroy
+    redirect_to user_home_path, notice:  "The document #{@document.name} has been deleted."
   end
 
   def edit
@@ -40,36 +40,20 @@ class DocumentsController < ApplicationController
   def update
     @user = User.find(current_user.id)
     @document = @user.documents.find(params[:id])
-    update_params = {documentname: params[:document][:documentname],
-                     is_public: params[:document][:is_public]}
-    if params["document"]["file"]
-      File.delete(full_path(@document.storedfile_name))
-      update_params[:storedfile_name] = upload_file(current_user.id,
-                                                    params["document"]["file"])
-    end
-    @document.update_attributes(update_params)
-    redirect_to user_home_path
-  end
 
-  def destroy
-    @user = User.find(current_user.id)
-    @document = @user.documents.find(params[:id])
-    # Delete the file from filesystem
-    File.delete(full_path(@document.storedfile_name))
-    # Delete the corresponding record from db
-    @document.destroy
-    respond_to do |format|
-      format.html { redirect_to user_home_path }
+    if params["document"]["file"]
+      File.delete(File.join("public", @document.attachment_url))
+      @document.attachment = params["document"]["file"]
     end
+    @document.update_attributes(name: params[:document][:name],
+                                is_public: params[:document][:is_public])
+    redirect_to user_home_path
   end
 
   private
 
-  def full_path(filename)
-    File.join("public/uploads/" + current_user.id.to_s, filename)
+  def document_params
+    params.require(:document).permit(:name, :attachment)
   end
 
-  def document_params
-    params.require(:document).permit(:file, :is_public)
-  end
 end

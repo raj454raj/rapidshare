@@ -1,8 +1,13 @@
-<h2>Please upload a file</h2>
-<%= form_for :document,
-             url: user_documents_path,
-             html: {multipart: true} do |f| %>
-  <%= f.file_field :file, required: true %>
-  Public ? <%= f.check_box :is_public %>
-  <%= f.submit "Upload file" %>
-<% end %>
+<div>
+   <%= form_for :document,
+                url: user_documents_path,
+                html: { multipart: true } do |f| %>
+      <%= f.label :name %>
+      <%= f.text_field :name, required: true %><br/>
+      <%= f.label :attachment %>
+      <%= f.file_field :attachment, required: true %><br/>
+      <%= f.label :is_public %>
+      <%= f.check_box :is_public %><br/>
+      <%= f.submit "Save", class: "btn btn-primary" %>
+   <% end %>
+</div>
